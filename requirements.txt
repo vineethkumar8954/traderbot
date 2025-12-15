@@ -1,8 +1,2 @@
-python-telegram-bot
-scikit-learn
-numpy
-pandas
-pytz
-pillow
-fastapi
-uvicorn
+python-telegram-bot==21.6
+
