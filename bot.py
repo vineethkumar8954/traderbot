@@ -2,7 +2,7 @@ import os
 from telegram.ext import ApplicationBuilder, CommandHandler
 
 # Read token from Railway environment variable
-TOKEN = os.getenv("8482347921:AAHPQ_R2k-fxbpd1Fq1PgtPE41QdouNSsL4")
+TOKEN = os.getenv("8525684914:AAEMOqld7cRh03Azwwrg4YTjNfLHItV7zYE")
 
 async def start(update, context):
     await update.message.reply_text(
