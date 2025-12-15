@@ -17,52 +17,62 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# ---------------- COMMANDS ----------------
+# ---------------- COMMAND HANDLERS ----------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "✅ Trader Bot is LIVE!\n\n"
-        "📊 Features coming:\n"
+        "📊 Upcoming features:\n"
         "• Candle close alerts\n"
-        "• ML prediction\n"
+        "• ML predictions\n"
         "• Win/Loss tracking\n\n"
         "Send /help to see commands."
     )
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🤖 Bot Commands:\n\n"
-        "/start – Check bot status\n"
-        "/help – Show this help\n"
-        "/ping – Test response\n\n"
-        "📷 You will soon be able to send chart screenshots."
+        "🤖 Available Commands:\n\n"
+        "/start – Bot status\n"
+        "/ping – Test connection\n"
+        "/help – Show help\n\n"
+        "📷 You can also send chart screenshots."
     )
 
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🏓 Pong! Bot is running fine.")
+    await update.message.reply_text("🏓 Pong! Bot is running correctly.")
 
-# ---------------- IMAGE HANDLER (PLACEHOLDER) ----------------
+# ---------------- IMAGE HANDLER ----------------
 async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "📷 Chart received.\n"
-        "🔍 Candle analysis + ML prediction coming soon."
+        "🔍 Candle analysis & ML prediction coming soon."
     )
+
+# ---------------- WEBHOOK FIX ----------------
+async def post_init(application):
+    # VERY IMPORTANT: removes old webhook so polling works
+    await application.bot.delete_webhook(drop_pending_updates=True)
 
 # ---------------- MAIN ----------------
 def main():
     if not TOKEN:
-        raise RuntimeError("BOT_TOKEN not found in environment variables")
+        raise RuntimeError("❌ BOT_TOKEN not found in environment variables")
 
-    app = ApplicationBuilder().token(TOKEN).build()
+    app = (
+        ApplicationBuilder()
+        .token(TOKEN)
+        .post_init(post_init)   # <-- webhook fix
+        .build()
+    )
 
     # Commands
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_cmd))
     app.add_handler(CommandHandler("ping", ping))
 
-    # Images (charts)
+    # Images
     app.add_handler(MessageHandler(filters.PHOTO, handle_image))
 
-    logging.info("🚀 Trader Bot started...")
+    logging.info("🚀 Trader Bot started and polling...")
     app.run_polling()
 
 if __name__ == "__main__":
